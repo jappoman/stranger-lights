@@ -1,0 +1,8 @@
+{
+  "PIXEL_PIN": "D18",
+  "NUM_PIXELS": 100,
+  "BRIGHTNESS": 0.2,
+  "AUTO_WRITE": false,
+  "ORDER": "RGB",
+  "USE_MOCK": true
+}
