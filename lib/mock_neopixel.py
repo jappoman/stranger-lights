@@ -27,10 +27,12 @@ class NeoPixel:
 
     def _print_pixels(self):
         """Print the current state of pixels as colored asterisks."""
+        print("\033[1A", end="")  # Move cursor up one line
+        print("\033[2K", end="")  # Clear the current line
         for color in self.pixels:
             r, g, b = color
             print(self._rgb_to_ansi(r, g, b) + "*", end="")
-        print("\033[0m")  # Reset color at the end
+        print("\033[0m", end="\r")  # Reset color and carriage return
 
     def _rgb_to_ansi(self, r, g, b):
         """Convert RGB values to ANSI color escape code."""

@@ -24,16 +24,22 @@ def _portal_effect(pixels, color_range, direction='forward', cycles=100):
         pixels.show()
         time.sleep(0.03)
 
-def orange_portal(pixels):
+def _orange_portal(pixels):
     """Display an orange portal effect."""
     orange_color_range = ((120, 180), (40, 70), (0, 0))
     _portal_effect(pixels, orange_color_range, direction='forward', cycles=100)
 
-def blue_portal(pixels):
+def _blue_portal(pixels):
     """Display a blue portal effect."""
     blue_color_range = ((0, 0), (30, 100), (120, 250))
     _portal_effect(pixels, blue_color_range, direction='backward', cycles=100)
 
-def portal(pixels, color_range, direction='forward', cycles=100):
+def _portal(pixels, color_range, direction='forward', cycles=100):
     """Display a portal effect with custom color range."""
     _portal_effect(pixels, color_range, direction, cycles)
+
+def portal_routine(pixels):
+    """Run a routine of portal effects."""
+    for _ in range(2):
+        _orange_portal(pixels)
+        _blue_portal(pixels)
