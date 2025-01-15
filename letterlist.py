@@ -31,8 +31,3 @@ LETTER_POSITIONS = {
     'Y': [14],
     'Z': [11, 12]
 }
-
-if __name__ == "__main__":
-    # Debug: Print all letter positions
-    for letter, positions in LETTER_POSITIONS.items():
-        print(f"{letter}: {positions}")
