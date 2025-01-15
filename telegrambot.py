@@ -1,20 +1,29 @@
 import telepot
-
-def on_chat_message(msg):
-	content_type, chat_type, chat_id = telepot.glance(msg)
-
-	if content_type == 'text':
-		txt=msg['text']
-		bot.sendMessage(chat_id, 'Ok, scrivo "%s" con le luci.' % txt)
-		out_file = open("/home/pi/wordslist.txt","w")
-		out_file.write(txt)
-		out_file.close()
-
-bot = telepot.Bot('871506086:AAGiN4Qx0mh8J-wVZlAn_DmrepDACP81Ezg')
-bot.message_loop(on_chat_message)
-
-print 'Listening ...'
-
 import time
-while 1:
-    time.sleep(10)
+
+def handle_chat_message(msg):
+    """Handle incoming chat messages and update the word list."""
+    content_type, chat_type, chat_id = telepot.glance(msg)
+
+    if content_type == 'text':
+        received_text = msg['text']
+        bot.sendMessage(chat_id, f'Ok, scrivo "{received_text}" con le luci.')
+
+        with open("wordslist.txt", "w") as out_file:
+            out_file.write(received_text)
+
+def main():
+    """Set up the bot and start listening for messages."""
+    bot = telepot.Bot('<YOUR_BOT_API_KEY>')
+    bot.message_loop(handle_chat_message)
+
+    print('Bot is listening for messages...')
+
+    try:
+        while True:
+            time.sleep(10)
+    except KeyboardInterrupt:
+        print("Bot stopped.")
+
+if __name__ == "__main__":
+    main()

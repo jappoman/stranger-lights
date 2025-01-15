@@ -1,5 +1,9 @@
-#Letter list with position (pos from 0 to 99). Is possible to have multiple positions for a single letter.
-letter_positions = {
+# Refactored letterlist.py
+"""
+This module defines letter positions on a NeoPixel grid. Each letter corresponds to a list of pixel indices.
+"""
+
+LETTER_POSITIONS = {
     'A': [73, 75, 76],
     'B': [71, 72],
     'C': [70],
@@ -27,3 +31,8 @@ letter_positions = {
     'Y': [14],
     'Z': [11, 12]
 }
+
+if __name__ == "__main__":
+    # Debug: Print all letter positions
+    for letter, positions in LETTER_POSITIONS.items():
+        print(f"{letter}: {positions}")
