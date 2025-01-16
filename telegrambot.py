@@ -22,7 +22,7 @@ def save_config(new_config):
 
 # Start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Ciao! Usa /config per gestire la configurazione del sistema.")
+    await update.message.reply_text("Hello! Use /config to manage the system configuration.")
 
 # Display configuration options
 async def config_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -33,7 +33,7 @@ async def config_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Mostra Configurazione Completa", callback_data="show_config")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Scegli cosa modificare:", reply_markup=reply_markup)
+    await update.message.reply_text("Choose what to edit:", reply_markup=reply_markup)
 
 # Handle inline keyboard interactions
 async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -90,17 +90,17 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             }
             config["STRANGER_CONFIG"]["LETTER_POSITIONS"] = letter_positions
             save_config(config)
-            await update.message.reply_text("LETTER_POSITIONS aggiornato con successo!")
+            await update.message.reply_text("LETTER_POSITIONS updated successfully!")
         except Exception as e:
-            await update.message.reply_text(f"Errore nella formattazione: {e}")
+            await update.message.reply_text(f"Error in formatting: {e}")
     elif awaiting_input == "WORD_LIST":
         try:
             words = [line.strip() for line in update.message.text.split(";")]
             config["STRANGER_CONFIG"]["WORD_LIST"] = words
             save_config(config)
-            await update.message.reply_text("WORD_LIST aggiornato con successo!")
+            await update.message.reply_text("WORD_LIST updated successfully!")
         except Exception as e:
-            await update.message.reply_text(f"Errore nella formattazione: {e}")
+            await update.message.reply_text(f"Error in formatting: {e}")
 
     context.user_data["awaiting_input"] = None
 
@@ -108,7 +108,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
     print(f"Errore: {context.error}")
     if isinstance(update, Update):
-        await update.message.reply_text("Si è verificato un errore. Riprova.")
+        await update.message.reply_text("An error occurred. Please try again.")
 
 # Function to run the Telegram bot
 def run_telegram_bot():
