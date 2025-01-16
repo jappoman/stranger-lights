@@ -43,14 +43,14 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     config = load_config()
 
     if query.data == "show_config":
-        await query.edit_message_text(f"Configurazione attuale:\n{json.dumps(config, indent=2)}")
+        await query.edit_message_text(f"Current Configuration:\n{json.dumps(config, indent=2)}")
     elif query.data == "edit_USE_MOCK":
         keyboard = [
             [InlineKeyboardButton("True", callback_data="set_USE_MOCK:True")],
             [InlineKeyboardButton("False", callback_data="set_USE_MOCK:False")],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text("Scegli il valore per USE_MOCK:", reply_markup=reply_markup)
+        await query.edit_message_text("Choose the new value for USE_MOCK:", reply_markup=reply_markup)
     elif query.data == "edit_ROUTINE":
         routines = ["test_routine", "portal_routine", "stranger_routine", "christmas_routine"]
         keyboard = [
@@ -58,23 +58,23 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             for routine in routines
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text("Scegli la nuova ROUTINE:", reply_markup=reply_markup)
+        await query.edit_message_text("Choose the new ROUTINE:", reply_markup=reply_markup)
     elif query.data.startswith("set_USE_MOCK"):
         try:
             new_value = query.data.split(":")[1].lower() == "true"
             config["USE_MOCK"] = new_value
             save_config(config)
-            await query.edit_message_text(f"USE_MOCK aggiornato a {new_value}")
+            await query.edit_message_text(f"USE_MOCK updated to {new_value}")
         except Exception as e:
-            await query.edit_message_text(f"Errore durante l'aggiornamento: {e}")
+            await query.edit_message_text(f"Error during update: {e}")
     elif query.data.startswith("set_ROUTINE"):
         try:
             new_value = query.data.split(":")[1]
             config["ROUTINE"] = new_value
             save_config(config)
-            await query.edit_message_text(f"ROUTINE aggiornata a {new_value}")
+            await query.edit_message_text(f"ROUTINE updated to {new_value}")
         except Exception as e:
-            await query.edit_message_text(f"Errore durante l'aggiornamento: {e}")
+            await query.edit_message_text(f"Error during update: {e}")
 
 # Handle user input for specific configurations
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
