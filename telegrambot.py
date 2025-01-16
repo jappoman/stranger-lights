@@ -59,6 +59,24 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text("Choose the new ROUTINE:", reply_markup=reply_markup)
+    elif query.data == "edit_STRANGER_CONFIG":
+        # Show options for STRANGER_CONFIG
+        keyboard = [
+            [InlineKeyboardButton("Edit LETTER_POSITIONS", callback_data="edit_LETTER_POSITIONS")],
+            [InlineKeyboardButton("Edit WORD_LIST", callback_data="edit_WORD_LIST")],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text("Choose what to edit in STRANGER_CONFIG:", reply_markup=reply_markup)
+    elif query.data == "edit_LETTER_POSITIONS":
+        await query.edit_message_text(
+            "Send the new LETTER_POSITIONS in this format:\nA:1,2,3;B:4,5,6;C:7,8,9"
+        )
+        context.user_data["awaiting_input"] = "LETTER_POSITIONS"
+    elif query.data == "edit_WORD_LIST":
+        await query.edit_message_text(
+            "Send the new WORD_LIST in this format:\nword1 word2;word3 word4"
+        )
+        context.user_data["awaiting_input"] = "WORD_LIST"
     elif query.data.startswith("set_USE_MOCK"):
         try:
             new_value = query.data.split(":")[1].lower() == "true"
@@ -83,18 +101,23 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if awaiting_input == "LETTER_POSITIONS":
         try:
+            # Parse user input and convert letters to uppercase
             letters = update.message.text.split(";")
-            letter_positions = {
-                letter.split(":")[0].strip(): [int(n) for n in letter.split(":")[1].split(",")]
+            updated_positions = {
+                letter.split(":")[0].strip().upper(): [int(n) for n in letter.split(":")[1].split(",")]
                 for letter in letters
             }
-            config["STRANGER_CONFIG"]["LETTER_POSITIONS"] = letter_positions
+
+            # Update only the specified letters
+            config["STRANGER_CONFIG"]["LETTER_POSITIONS"].update(updated_positions)
             save_config(config)
             await update.message.reply_text("LETTER_POSITIONS updated successfully!")
         except Exception as e:
             await update.message.reply_text(f"Error in formatting: {e}")
+
     elif awaiting_input == "WORD_LIST":
         try:
+            # Parse and replace the WORD_LIST
             words = [line.strip() for line in update.message.text.split(";")]
             config["STRANGER_CONFIG"]["WORD_LIST"] = words
             save_config(config)
@@ -102,6 +125,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             await update.message.reply_text(f"Error in formatting: {e}")
 
+    # Clear awaiting_input
     context.user_data["awaiting_input"] = None
 
 # Handle errors globally

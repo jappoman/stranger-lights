@@ -11,7 +11,7 @@
     "ADMIN_USER_ID": 123456789
   },
   "USE_MOCK": true,
-  "ROUTINE": "christmas_routine",
+  "ROUTINE": "stranger_routine",
   "STRANGER_CONFIG": {
     "LETTER_POSITIONS": {
       "A": [
@@ -109,11 +109,15 @@
       "Z": [
         11,
         12
+      ],
+      "a": [
+        1
       ]
     },
     "WORD_LIST": [
-      "Hi how are you",
-      "My name is jappoman"
+      "ciao come va",
+      "io tutto bene e tu",
+      "anche io molto bene"
     ]
   }
 }
