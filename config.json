@@ -12,6 +12,24 @@
   },
   "USE_MOCK": true,
   "ROUTINE": "stranger_routine",
+  "ROUTINE_LIST": [
+    {
+      "name": "test_routine",
+      "module": "lib.test"
+    },
+    {
+      "name": "portal_routine",
+      "module": "lib.portal"
+    },
+    {
+      "name": "stranger_routine",
+      "module": "lib.stranger"
+    },
+    {
+      "name": "christmas_routine",
+      "module": "lib.christmas"
+    }
+  ],
   "STRANGER_CONFIG": {
     "LETTER_POSITIONS": {
       "A": [

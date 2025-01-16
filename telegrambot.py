@@ -30,7 +30,6 @@ async def config_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Edit USE_MOCK", callback_data="edit_USE_MOCK")],
         [InlineKeyboardButton("Edit ROUTINE", callback_data="edit_ROUTINE")],
         [InlineKeyboardButton("Edit STRANGER_CONFIG", callback_data="edit_STRANGER_CONFIG")],
-        [InlineKeyboardButton("Show Full Configuration", callback_data="show_config")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Choose what to edit:", reply_markup=reply_markup)
@@ -42,9 +41,7 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     config = load_config()
 
-    if query.data == "show_config":
-        await query.edit_message_text(f"Current Configuration:\n{json.dumps(config, indent=2)}")
-    elif query.data == "edit_USE_MOCK":
+    if query.data == "edit_USE_MOCK":
         keyboard = [
             [InlineKeyboardButton("True", callback_data="set_USE_MOCK:True")],
             [InlineKeyboardButton("False", callback_data="set_USE_MOCK:False")],
@@ -52,7 +49,7 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text("Choose the new value for USE_MOCK:", reply_markup=reply_markup)
     elif query.data == "edit_ROUTINE":
-        routines = ["test_routine", "portal_routine", "stranger_routine", "christmas_routine"]
+        routines = [routine["name"] for routine in config.get("ROUTINE_LIST", [])]
         keyboard = [
             [InlineKeyboardButton(routine, callback_data=f"set_ROUTINE:{routine}")]
             for routine in routines
@@ -155,4 +152,3 @@ def run_telegram_bot():
 
     # Esegui il polling all'interno del nuovo loop
     loop.run_until_complete(app.run_polling())
-
