@@ -27,10 +27,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Display configuration options
 async def config_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Modifica USE_MOCK", callback_data="edit_USE_MOCK")],
-        [InlineKeyboardButton("Modifica ROUTINE", callback_data="edit_ROUTINE")],
-        [InlineKeyboardButton("Modifica STRANGER_CONFIG", callback_data="edit_STRANGER_CONFIG")],
-        [InlineKeyboardButton("Mostra Configurazione Completa", callback_data="show_config")],
+        [InlineKeyboardButton("Edit USE_MOCK", callback_data="edit_USE_MOCK")],
+        [InlineKeyboardButton("Edit ROUTINE", callback_data="edit_ROUTINE")],
+        [InlineKeyboardButton("Edit STRANGER_CONFIG", callback_data="edit_STRANGER_CONFIG")],
+        [InlineKeyboardButton("Show Full Configuration", callback_data="show_config")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Choose what to edit:", reply_markup=reply_markup)
