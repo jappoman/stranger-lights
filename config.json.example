@@ -7,7 +7,7 @@
     "ORDER": "RGB"
   },
   "BOT_CONFIG": {
-    "TOKEN": "871506086:AAGiN4Qx0mh8J-wVZlAn_DmrepDACP81Ezg",
+    "TOKEN": "INSERT_YOUR_BOT_TOKEN_HERE",
     "ADMIN_USER_ID": 123456789
   },
   "USE_MOCK": true,
@@ -113,7 +113,7 @@
     },
     "WORD_LIST": [
       "Hi how are you",
-      "My name is jappoman"
+      "I am fine"
     ]
   }
 }
