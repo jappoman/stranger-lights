@@ -1,10 +1,12 @@
 import json
 import time
+import threading
 from lib.utility import *
 from lib.portal import portal_routine
 from lib.test import test_routine
 from lib.stranger import stranger_routine
 from lib.christmas import christmas_routine
+from telegrambot import run_telegram_bot
 
 # Function to load configuration dynamically
 def load_config():
@@ -22,20 +24,21 @@ ROUTINES = {
 # Load initial configuration
 config = load_config()
 
-# Determine whether to use the mock or the real NeoPixel library
+# Initialize NeoPixel or mock based on the configuration
+neopixel_config = config["NEOPIXEL_CONFIG"]
 if config["USE_MOCK"]:
     from lib.mock_neopixel import NeoPixel
-    PIXEL_PIN = config["PIXEL_PIN"]  # Mock doesn't use a real PIN
+    PIXEL_PIN = neopixel_config["PIXEL_PIN"]  # Mock doesn't use a real PIN
 else:
     import board
     import neopixel
-    PIXEL_PIN = getattr(board, config["PIXEL_PIN"])  # Map string to board attribute dynamically
+    PIXEL_PIN = getattr(board, neopixel_config["PIXEL_PIN"])  # Map string to board attribute dynamically
 
 # Common configuration
-NUM_PIXELS = config["NUM_PIXELS"]
-BRIGHTNESS = config["BRIGHTNESS"]
-AUTO_WRITE = config["AUTO_WRITE"]
-ORDER = getattr(neopixel, config["ORDER"]) if not config["USE_MOCK"] else config["ORDER"]
+NUM_PIXELS = neopixel_config["NUM_PIXELS"]
+BRIGHTNESS = neopixel_config["BRIGHTNESS"]
+AUTO_WRITE = neopixel_config["AUTO_WRITE"]
+ORDER = getattr(neopixel, neopixel_config["ORDER"]) if not config["USE_MOCK"] else neopixel_config["ORDER"]
 
 # Initialize NeoPixel or mock with the loaded configuration
 pixels = NeoPixel(
@@ -46,6 +49,10 @@ pixels = NeoPixel(
 if __name__ == "__main__":
     turn_off(pixels)
     last_routine = None
+
+    # Avvia il bot Telegram in un thread separato
+    bot_thread = threading.Thread(target=run_telegram_bot, daemon=True)
+    bot_thread.start()
 
     while True:
         try:
