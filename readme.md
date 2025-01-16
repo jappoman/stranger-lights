@@ -99,6 +99,46 @@ Opens the configuration menu, allowing you to:
   ```
   Each `;` represents a new line.
 
+## Installation on Raspberry Pi
+
+To deploy this project on a Raspberry Pi:
+
+### Step 1: Clone the Repository
+1. SSH into your Raspberry Pi:
+```bash
+ssh pi@<RPI_IP_ADDRESS>
+```
+2. Clone the repository:
+```bash
+git clone <REPOSITORY_URL>
+cd stranger-lights
+```
+
+### Step 2: Run the Setup Script
+
+1. Make the setup script executable:
+```bash
+chmod +x setup.sh
+```
+2. Run the setup script:
+```bash
+./setup.sh
+```
+This will:
+- Install all required dependencies.
+- Configure the application to run automatically on system boot.
+- Start the application immediately.
+
+### Step 3: Verify the Service
+Check that the service is running:
+```bash
+sudo systemctl status stranger-lights.service
+```
+To view logs:
+```bash
+sudo journalctl -u stranger-lights.service -f
+```
+
 ## Development Notes
 
 ### Adding New Routines
