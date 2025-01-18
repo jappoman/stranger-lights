@@ -27,33 +27,7 @@ pip install -r requirements.txt
 
 ## Configuration
 
-The system is configured through a `config.json` file. You can find an example file named `config.json.example` in the project. Below is an example configuration:
-
-```json
-{
-  "NEOPIXEL_CONFIG": {
-    "PIXEL_PIN": "D18",
-    "NUM_PIXELS": 100,
-    "BRIGHTNESS": 0.2,
-    "AUTO_WRITE": false,
-    "ORDER": "RGB"
-  },
-  "BOT_CONFIG": {
-    "TOKEN": "YOUR_TELEGRAM_BOT_TOKEN",
-    "ADMIN_USER_ID": 123456789
-  },
-  "USE_MOCK": true,
-  "ROUTINE": "stranger_routine",
-  "STRANGER_CONFIG": {
-    "LETTER_POSITIONS": {
-      "A": [73, 75, 76],
-      "B": [71, 72],
-      "C": [70]
-    },
-    "WORD_LIST": ["Hello World", "Stranger Lights"]
-  }
-}
-```
+The system is configured through a `config.json` file. You have to add the Telegram Bot API key into the file.
 
 ### Key Sections
 - **NEOPIXEL_CONFIG**: settings for the NeoPixel LED strip.
