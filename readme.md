@@ -103,15 +103,24 @@ Opens the configuration menu, allowing you to:
 
 To deploy this project on a Raspberry Pi:
 
-### Step 1: Clone the Repository
+### Step 0: Install git and python3
 1. SSH into your Raspberry Pi:
 ```bash
 ssh pi@<RPI_IP_ADDRESS>
 ```
-2. Clone the repository:
+2. Install git:
+```bash
+sudo apt-get update
+sudo apt-get install git
+```
+3. Clone the repository:
 ```bash
 git clone <REPOSITORY_URL>
 cd stranger-lights
+```
+4. Install Python 3:
+```bash
+sudo apt-get install python3
 ```
 
 ### Step 2: Run the Setup Script
