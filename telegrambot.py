@@ -133,27 +133,29 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
 
 # Function to run the Telegram bot
 def run_telegram_bot():
-    config = load_config()
-    TOKEN = config["BOT_CONFIG"]["TOKEN"]
-
-    # Creazione del bot
-    app = ApplicationBuilder().token(TOKEN).build()
-
-    # Aggiungi handler
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("config", config_menu))
-    app.add_handler(CallbackQueryHandler(handle_callback))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
-    app.add_error_handler(error_handler)
-
-    async def run():
-        await app.run_polling()
-
-    # Creazione di un event loop personalizzato per il thread
+    # Creazione di un nuovo event loop per il thread secondario
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
+    async def run():
+        config = load_config()
+        TOKEN = config["BOT_CONFIG"]["TOKEN"]
+
+        # Creazione del bot
+        app = ApplicationBuilder().token(TOKEN).build()
+
+        # Aggiungi handler
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CommandHandler("config", config_menu))
+        app.add_handler(CallbackQueryHandler(handle_callback))
+        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+        app.add_error_handler(error_handler)
+
+        print("Telegram bot is running...")
+        await app.run_polling()
+
     try:
+        # Avvia l'async function usando il nuovo event loop
         loop.run_until_complete(run())
     except Exception as e:
         print(f"Errore durante l'esecuzione del bot: {e}")
