@@ -14,8 +14,8 @@ echo "Updating and upgrading the system..."
 sudo apt update && sudo apt upgrade -y
 
 # Install required packages
-echo "Installing Python, pip, Git, and system dependencies..."
-sudo apt install -y python3 python3-pip git
+echo "Installing Python, pip, and system dependencies..."
+sudo apt install -y python3 python3-pip
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
