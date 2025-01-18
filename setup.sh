@@ -3,7 +3,6 @@
 set -e  # Exit on errors
 
 # Variables
-PYTHON_PATH="/usr/bin/python3"
 USER=$(whoami)
 WORKING_DIR=$(pwd)
 SERVICE_NAME="stranger-lights.service"
@@ -16,32 +15,12 @@ sudo apt update && sudo apt upgrade -y
 # Install system dependencies
 echo "Installing dependencies..."
 sudo apt install -y python3 python3-pip python3-venv portaudio19-dev libopenblas-dev libgpiod2
+sudo pip3 install rpi_ws281x adafruit-circuitpython-neopixel python-telegram-bot
+sudo python3 -m pip install --force-reinstall adafruit-blinka
 
 # Disable audio on GPIO18
 echo "Disabling audio on GPIO18..."
 sudo sed -i '/^dtparam=audio=/c\dtparam=audio=off' /boot/config.txt
-
-# Add the current user to the gpio group for non-sudo GPIO access
-echo "Configuring GPIO access for non-root users..."
-sudo groupadd -f gpio
-sudo usermod -aG gpio $USER
-
-# Create and activate the virtual environment
-if [ ! -d "$VENV_DIR" ]; then
-  echo "Creating Python virtual environment..."
-  $PYTHON_PATH -m venv $VENV_DIR
-fi
-
-echo "Activating virtual environment..."
-source $VENV_DIR/bin/activate
-
-# Upgrade pip and install Python dependencies
-echo "Installing Python libraries in the virtual environment..."
-pip install --upgrade pip
-pip install -r requirements.txt
-
-# Deactivate the virtual environment
-deactivate
 
 # Create systemd service
 echo "Creating systemd service..."
