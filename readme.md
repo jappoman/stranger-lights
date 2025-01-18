@@ -77,12 +77,15 @@ Opens the configuration menu, allowing you to:
 
 To deploy this project on a Raspberry Pi:
 
-### Step 0: Install git
+### Step 0: prepare the Raspberry Pi
+Follow the pdf file in docs folder to prepare the Raspberry Pi for the project.
+
+### Step 1: install Git and clone the repository
 1. SSH into your Raspberry Pi:
 ```bash
 ssh pi@<RPI_IP_ADDRESS>
 ```
-2. Install git:
+2. Install Git:
 ```bash
 sudo apt-get update
 sudo apt-get install git
@@ -94,7 +97,6 @@ cd stranger-lights
 ```
 
 ### Step 2: Run the Setup Script
-
 1. Make the setup script executable:
 ```bash
 chmod +x setup.sh

@@ -146,9 +146,16 @@ def run_telegram_bot():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     app.add_error_handler(error_handler)
 
+    async def run():
+        await app.run_polling()
+
     # Creazione di un event loop personalizzato per il thread
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    # Esegui il polling all'interno del nuovo loop
-    loop.run_until_complete(app.run_polling())
+    try:
+        loop.run_until_complete(run())
+    except Exception as e:
+        print(f"Errore durante l'esecuzione del bot: {e}")
+    finally:
+        loop.close()
