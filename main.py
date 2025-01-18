@@ -7,10 +7,12 @@ from telegrambot import run_telegram_bot
 import board
 import neopixel
 
+
 # Function to load configuration dynamically
 def load_config():
     with open("config.json", "r") as config_file:
         return json.load(config_file)
+
 
 # Function to dynamically load routines from config
 def load_routines_from_config():
@@ -24,6 +26,7 @@ def load_routines_from_config():
         except (ImportError, AttributeError) as e:
             print(f"Error loading routine {routine['name']}: {e}")
     return routines
+
 
 # Initialize NeoPixel or mock based on the configuration
 def initialize_pixels(config):
@@ -50,18 +53,15 @@ def initialize_pixels(config):
             pixel_order=getattr(neopixel, neopixel_config["ORDER"], neopixel.RGB)
         )
 
-# Main Program
-if __name__ == "__main__":
+
+# Function to handle the light routines in a separate thread
+def run_light_routines():
     config = load_config()
     ROUTINES = load_routines_from_config()
     pixels = initialize_pixels(config)
 
     turn_off(pixels)
     last_routine = None
-
-    # Start Telegram bot in a separate thread
-    bot_thread = threading.Thread(target=run_telegram_bot, daemon=True)
-    bot_thread.start()
 
     while True:
         try:
@@ -82,7 +82,17 @@ if __name__ == "__main__":
                 print(f"Unknown routine: {routine_name}")
 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error in light routine: {e}")
 
         # Sleep to reduce file access frequency
         time.sleep(1)
+
+
+# Main Program
+if __name__ == "__main__":
+    # Start the light routines in a separate thread
+    light_thread = threading.Thread(target=run_light_routines, daemon=True)
+    light_thread.start()
+
+    # Run the Telegram bot in the main thread
+    run_telegram_bot()
