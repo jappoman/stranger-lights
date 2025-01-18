@@ -3,7 +3,6 @@
 set -e  # Exit on errors
 
 # Variables
-USER=$(whoami)
 WORKING_DIR=$(pwd)
 SERVICE_NAME="stranger-lights.service"
 VENV_DIR="$WORKING_DIR/venv"
@@ -34,7 +33,7 @@ After=network.target
 ExecStart=$VENV_DIR/bin/python $WORKING_DIR/main.py
 WorkingDirectory=$WORKING_DIR
 Restart=always
-User=$USER
+User=root
 Environment=PYTHONUNBUFFERED=1
 
 [Install]
@@ -47,4 +46,5 @@ sudo systemctl enable $SERVICE_NAME
 sudo systemctl start $SERVICE_NAME
 
 echo "Setup complete! Please reboot the system for changes to take effect."
-echo "After reboot, you can run your script manually using: source $VENV_DIR/bin/activate && python main.py"
+echo "You can check the service status with: sudo systemctl status $SERVICE_NAME"
+
