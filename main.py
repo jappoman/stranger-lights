@@ -4,6 +4,8 @@ import time
 import threading
 from lib.utility import turn_off
 from telegrambot import run_telegram_bot
+import board
+import neopixel
 
 # Function to load configuration dynamically
 def load_config():
@@ -23,39 +25,41 @@ def load_routines_from_config():
             print(f"Error loading routine {routine['name']}: {e}")
     return routines
 
-# Load routines dynamically
-ROUTINES = load_routines_from_config()
-
-# Load initial configuration
-config = load_config()
-
 # Initialize NeoPixel or mock based on the configuration
-neopixel_config = config["NEOPIXEL_CONFIG"]
-if config["USE_MOCK"]:
-    from lib.mock_neopixel import NeoPixel
-    PIXEL_PIN = neopixel_config["PIXEL_PIN"]  # Mock doesn't use a real PIN
-else:
-    import board
-    import neopixel
-    PIXEL_PIN = getattr(board, neopixel_config["PIXEL_PIN"])  # Map string to board attribute dynamically
+def initialize_pixels(config):
+    neopixel_config = config["NEOPIXEL_CONFIG"]
+    if config["USE_MOCK"]:
+        from lib.mock_neopixel import NeoPixel
+        return NeoPixel(
+            neopixel_config["PIXEL_PIN"],
+            neopixel_config["NUM_PIXELS"],
+            brightness=neopixel_config["BRIGHTNESS"],
+            auto_write=neopixel_config["AUTO_WRITE"],
+            pixel_order=neopixel_config["ORDER"]
+        )
+    else:
+        pixel_pin = getattr(board, neopixel_config["PIXEL_PIN"], None)
+        if not pixel_pin:
+            raise AttributeError(f"Invalid GPIO pin: {neopixel_config['PIXEL_PIN']}")
 
-# Common configuration
-NUM_PIXELS = neopixel_config["NUM_PIXELS"]
-BRIGHTNESS = neopixel_config["BRIGHTNESS"]
-AUTO_WRITE = neopixel_config["AUTO_WRITE"]
-ORDER = getattr(neopixel, neopixel_config["ORDER"]) if not config["USE_MOCK"] else neopixel_config["ORDER"]
-
-# Initialize NeoPixel or mock with the loaded configuration
-pixels = NeoPixel(
-    PIXEL_PIN, NUM_PIXELS, brightness=BRIGHTNESS, auto_write=AUTO_WRITE, pixel_order=ORDER
-)
+        return neopixel.NeoPixel(
+            pixel_pin,
+            neopixel_config["NUM_PIXELS"],
+            brightness=neopixel_config["BRIGHTNESS"],
+            auto_write=neopixel_config["AUTO_WRITE"],
+            pixel_order=getattr(neopixel, neopixel_config["ORDER"], neopixel.RGB)
+        )
 
 # Main Program
 if __name__ == "__main__":
+    config = load_config()
+    ROUTINES = load_routines_from_config()
+    pixels = initialize_pixels(config)
+
     turn_off(pixels)
     last_routine = None
 
-    # Avvia il bot Telegram in un thread separato
+    # Start Telegram bot in a separate thread
     bot_thread = threading.Thread(target=run_telegram_bot, daemon=True)
     bot_thread.start()
 
@@ -70,7 +74,7 @@ if __name__ == "__main__":
                 print(f"Switching to routine: {routine_name}")
                 last_routine = routine_name
 
-            # Get the routine function dynamically
+            # Execute the routine
             routine = ROUTINES.get(routine_name)
             if routine:
                 routine(pixels)
@@ -80,5 +84,5 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error: {e}")
 
-        # Sleep for a short period to avoid excessive file access
+        # Sleep to reduce file access frequency
         time.sleep(1)

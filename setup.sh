@@ -1,29 +1,33 @@
 #!/bin/bash
 
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e  # Exit on errors
 
 # Variables
-PROJECT_NAME=$(basename $(pwd))  # Use the current directory name as the project name
 PYTHON_PATH="/usr/bin/python3"
-USER=$(whoami)  # Get the current user
-WORKING_DIR=$(pwd)  # Current working directory
+USER=$(whoami)
+WORKING_DIR=$(pwd)
 SERVICE_NAME="stranger-lights.service"
 
 # Update and upgrade the system
-echo "Updating and upgrading the system..."
+echo "Updating the system..."
 sudo apt update && sudo apt upgrade -y
 
-# Install required packages
-echo "Installing Python, pip, and system dependencies..."
-sudo apt install -y python3 python3-pip
+# Install system dependencies
+echo "Installing dependencies..."
+sudo apt install -y python3 python3-pip portaudio19-dev libopenblas-dev libgpiod2
+
+# Disable audio on GPIO18
+echo "Disabling audio on GPIO18..."
+sudo sed -i '/^dtparam=audio=/c\dtparam=audio=off' /boot/config.txt
+sudo systemctl reboot  # Reboot required for changes to take effect
 
 # Install Python dependencies
-echo "Installing Python dependencies..."
-pip3 install --upgrade pip  # Upgrade pip first
+echo "Installing Python libraries..."
+pip3 install --upgrade pip
 pip3 install -r requirements.txt
 
-# Create a systemd service file
-echo "Creating the systemd service file..."
+# Create systemd service
+echo "Creating systemd service..."
 SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME"
 sudo bash -c "cat > $SERVICE_FILE" <<EOL
 [Unit]
@@ -41,17 +45,9 @@ Environment=PYTHONUNBUFFERED=1
 WantedBy=multi-user.target
 EOL
 
-# Reload systemd and enable the service
-echo "Configuring systemd..."
+# Enable and start service
 sudo systemctl daemon-reload
 sudo systemctl enable $SERVICE_NAME
-
-# Start the service
-echo "Starting the Stranger Lights service..."
 sudo systemctl start $SERVICE_NAME
 
-# Check the service status
-echo "Checking the service status..."
-sudo systemctl status $SERVICE_NAME
-
-echo "Setup complete! The Stranger Lights service is running and will start automatically on reboot."
+echo "Setup complete! Use 'sudo systemctl status $SERVICE_NAME' to check the service."
