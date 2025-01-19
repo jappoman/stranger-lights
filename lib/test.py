@@ -21,15 +21,8 @@ def _light_sequence(pixels, reverse=False):
         pixels.show()
         time.sleep(0.1)
 
-def _light_all(pixels):
-    """Light up all pixels with random colors."""
-    pixels.fill((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-    )
-    pixels.show()
-
 def test_routine(pixels):
     """Run a test routine with random colors."""
     turn_off(pixels)
     _test_pixels(pixels)
     _light_sequence(pixels)
-    _light_all(pixels)
